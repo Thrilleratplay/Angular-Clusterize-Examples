@@ -1,0 +1,23 @@
+{
+  "name": "angular-clusterize-examples",
+  "version": "1.0.0",
+  "description": "Angular.js directives leveraging [Clusterize.js](https://github.com/NeXTs/Clusterize.js)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Thrilleratplay/Angular-Clusterize-Examples.git"
+  },
+  "author": "Tom Hiller <thrilleratplay@gmail.com> (https://github.com/Thrilleratplay)",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Thrilleratplay/Angular-Clusterize-Examples/issues"
+  },
+  "homepage": "https://github.com/Thrilleratplay/Angular-Clusterize-Examples#readme",
+  "devDependencies": {
+    "eslint": "^3.2.0",
+    "eslint-config-airbnb-base": "^5.0.1",
+    "eslint-config-angular": "^0.5.0",
+    "eslint-plugin-angular": "^1.3.1",
+    "eslint-plugin-import": "^1.12.0",
+    "eslint-plugin-jsdoc": "^2.3.1"
+  }
+}

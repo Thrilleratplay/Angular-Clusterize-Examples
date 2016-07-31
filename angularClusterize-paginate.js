@@ -23,6 +23,7 @@
       // Clusterize elements
       var scrollEl = $elem[0].querySelector('.clusterize-scroll');
       var contentEl = $elem[0].querySelector('.clusterize-content');
+      var headerEl = $elem[0].querySelector('.clusterize-header');
 
       // init clusterize
       var clusterize = new Clusterize({
@@ -31,11 +32,13 @@
         contentElem: contentEl
       });
 
+      // Override Clusterize.js html function
       clusterize.html = function (data) {
         contentEl.innerHTML = data;
 
         // Update rendered rows
         $compile(contentEl)($scope);
+        $scope.syncWidth();
       };
 
       // HACK: This is needed to correctly bind angular when first loaded
@@ -47,6 +50,20 @@
       $scope.$watch('rows.length', function () {
         clusterize.update(_buildRows($scope.rows));
       });
+
+      // Watch scroll
+      angular.element(scrollEl).on('scroll', function () {
+        // Fires on last row
+        if (scrollEl.scrollTop >= scrollEl.scrollHeight - scrollEl.clientHeight
+        && angular.isFunction($scope.onLastRow)) {
+          $scope.$applyAsync($scope.onLastRow);
+        }
+      });
+
+      // Set header width to content's scroll width
+      $scope.syncWidth = function () {
+        headerEl.style.width = scrollEl.clientWidth + 'px';
+      };
     }
 
     // ***********************************************************************
@@ -58,7 +75,7 @@
      */
     function _buildRows(rows) {
       return rows.map(function (val) {
-        return '<tr><td ng-click="clickme(' + val + ')">' + val + '</td></tr>';
+        return '<tr><td>' + val.name + '</td><td>' + val.genres.join(', ') + '</td></tr>';
       });
     }
 
@@ -66,19 +83,29 @@
 
     return {
       restrict: 'E',
-      template: ['<table>',
-          '<thead></thead>',
-          '</table>',
-          '<div class="clusterize-scroll">',
-          '<table>',
-          '<tbody class="clusterize-content">',
-          '<tr class="clusterize-no-data">',
-          '<td>Loading data…</td>',
-          '</tr>',
-          '</tbody>',
-          '</table>',
-          '</div>'
-        ].join(''),
+      scope: {
+        rows: '=',
+        headers: '=',
+        onLastRow: '&?'
+      },
+      template: [
+        '<div class="clusterize-header">',
+        '<table>',
+        '<thead><tr>',
+        '<th ng-repeat="header in headers">{{ header }}</th>',
+        '</tr></thead>',
+        '</table>',
+        '</div>',
+        '<div class="clusterize-scroll">',
+        '<table>',
+        '<tbody class="clusterize-content">',
+        '<tr class="clusterize-no-data">',
+        '<td>Loading data…</td>',
+        '</tr>',
+        '</tbody>',
+        '</table>',
+        '</div>'
+      ].join(''),
       link: _linkFn
     };
   }
